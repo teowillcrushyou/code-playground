@@ -31,6 +31,29 @@ jobs:
       - name: Build and test
         run: npm test
 
+      - name: Enforce a static-only release
+        shell: bash
+        run: |
+          rm -rf out/api
+          if find out -type l -print -quit | grep -q .; then
+            echo "Symlinks are not allowed in the production release." >&2
+            exit 1
+          fi
+          if find out -type f \( \
+            -iname '*.php' -o \
+            -iname '*.phtml' -o \
+            -iname '*.phar' -o \
+            -iname '*.cgi' -o \
+            -iname '*.pl' -o \
+            -iname '*.py' -o \
+            -iname '*.rb' -o \
+            -iname '.htaccess' -o \
+            -iname '.user.ini' \
+          \) -print -quit | grep -q .; then
+            echo "Executable or server-configuration files are not allowed in the production release." >&2
+            exit 1
+          fi
+
       - name: Install the FTPS client
         run: sudo apt-get update && sudo apt-get install --yes lftp
 
@@ -48,6 +71,7 @@ jobs:
             set net:max-retries 2;
             set net:timeout 20;
             open -p 21 -u 'teo@teoisthewinner.com',\"$FTPS_PASSWORD\" 'ftp://secure367.inmotionhosting.com';
-            mirror --reverse --verbose=1 --parallel=4 ./out/ /;
+            mirror --reverse --verbose=1 --parallel=4 --exclude-glob 'api/**' ./out/ /;
             bye
           "
+
