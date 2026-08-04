@@ -63,6 +63,7 @@ jobs:
         shell: bash
         run: |
           test -n "$FTPS_PASSWORD"
+          printf '%s' "$GITHUB_SHA" > .deploy-ready
           lftp -c "
             set cmd:fail-exit yes;
             set ftp:ssl-force true;
@@ -72,6 +73,7 @@ jobs:
             set net:timeout 20;
             open -p 21 -u 'teo@teoisthewinner.com',\"$FTPS_PASSWORD\" 'ftp://secure367.inmotionhosting.com';
             mirror --reverse --verbose=1 --parallel=4 --exclude-glob 'api/**' ./out/ /;
+            put .deploy-ready -o /.deploy-ready;
             bye
           "
 
