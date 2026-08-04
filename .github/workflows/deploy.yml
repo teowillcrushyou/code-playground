@@ -1,0 +1,53 @@
+name: Deploy teoisthewinner.com
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: teoisthewinner-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the site
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and test
+        run: npm test
+
+      - name: Install the FTPS client
+        run: sudo apt-get update && sudo apt-get install --yes lftp
+
+      - name: Deploy the static site to InMotion
+        env:
+          FTPS_PASSWORD: ${{ secrets.TEO_FTPS_PASSWORD }}
+        shell: bash
+        run: |
+          test -n "$FTPS_PASSWORD"
+          lftp -c "
+            set cmd:fail-exit yes;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate true;
+            set net:max-retries 2;
+            set net:timeout 20;
+            open -p 21 -u 'teo@teoisthewinner.com',\"$FTPS_PASSWORD\" 'ftp://secure367.inmotionhosting.com';
+            mirror --reverse --verbose=1 --parallel=4 ./out/ /;
+            bye
+          "
