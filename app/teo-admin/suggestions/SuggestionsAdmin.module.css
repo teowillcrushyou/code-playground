@@ -1,0 +1,98 @@
+
+.loginPage,
+.page {
+  min-height: 100vh;
+  background: #071a3b;
+  color: #fff;
+}
+
+.loginPage {
+  padding: 28px 18px;
+  display: grid;
+  place-items: center;
+}
+
+.loginCard {
+  width: min(500px, 100%);
+  padding: clamp(28px, 6vw, 54px);
+  display: grid;
+  gap: 12px;
+  border: 4px solid #020b18;
+  background: #a9ddff;
+  color: #172033;
+  box-shadow: 10px 10px 0 #020b18;
+}
+
+.loginCard > p,
+.header p {
+  margin: 0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+
+.loginCard h1,
+.header h1 {
+  margin: 0;
+  font-size: clamp(42px, 8vw, 76px);
+  line-height: .9;
+  letter-spacing: -3px;
+}
+
+.loginCard > span { margin: 5px 0 18px; font-size: 11px; font-weight: 700; line-height: 1.6; }
+.loginCard label { font-size: 9px; font-weight: 700; letter-spacing: 1px; }
+.loginCard input { padding: 13px; border: 3px solid #172033; background: #fff; font: inherit; }
+.loginCard button,
+.header button,
+.actions button {
+  padding: 13px 15px;
+  border: 2px solid #172033;
+  background: #b7f43b;
+  color: #172033;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #172033;
+}
+.loginCard strong { padding: 10px; border: 2px solid #172033; background: #ffd0d5; font-size: 10px; }
+.loginCard a { margin-top: 18px; font-size: 9px; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+
+.page { padding: 28px clamp(16px, 5vw, 72px) 54px; }
+.header,
+.board,
+.notice { width: min(1040px, 100%); margin-inline: auto; }
+.header { padding: 22px 0 28px; display: flex; align-items: end; justify-content: space-between; gap: 28px; border-bottom: 3px solid #fff; }
+.header > div > span { display: block; margin-top: 14px; color: #b7c7da; font-size: 11px; font-weight: 700; }
+.header button { min-width: 120px; background: #fff; }
+.notice { margin-top: 18px; padding: 12px 14px; border: 2px solid #020b18; background: #ffd961; color: #172033; font-size: 10px; font-weight: 700; }
+.board { padding-top: 24px; display: grid; gap: 14px; }
+.card { padding: 22px; border: 3px solid #020b18; background: #fff; color: #172033; box-shadow: 6px 6px 0 #020b18; }
+.cardTop { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.cardTop strong { padding: 6px 8px; border: 1px solid #172033; background: #ffd961; font-size: 8px; letter-spacing: 1px; }
+.cardTop time { color: #657184; font-size: 8px; font-weight: 700; }
+.card h2 { margin-top: 16px; font-size: 14px; letter-spacing: .6px; }
+.card > p { max-width: 780px; margin: 10px 0 0; font-size: 14px; font-weight: 700; line-height: 1.65; white-space: pre-wrap; }
+.actions,
+.buildLinks { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.actions button { box-shadow: 3px 3px 0 #172033; }
+.actions button:disabled { opacity: .6; cursor: wait; }
+.actions .reject { background: #fff; }
+.actions .publish { background: #b7f43b; }
+.buildLinks a,
+.officialLink { padding: 10px 12px; border: 2px solid #172033; background: #a9ddff; font-size: 9px; font-weight: 700; }
+.officialLink { display: inline-block; margin-top: 18px; background: #b7f43b; }
+.approved, .building, .publish_requested, .publishing { background: #a9ddff !important; }
+.ready { background: #b7f43b !important; }
+.published { background: #b7f43b !important; }
+.rejected { background: #e3e7ec !important; }
+.failed { background: #ffd0d5 !important; }
+.empty { padding: 42px; border: 3px dashed #8fa3bd; color: #b7c7da; font-size: 11px; font-weight: 700; text-align: center; }
+
+@media (max-width: 650px) {
+  .header { align-items: flex-start; flex-direction: column; }
+  .header button { width: 100%; }
+  .cardTop { align-items: flex-start; flex-direction: column; }
+  .actions button, .buildLinks a { width: 100%; text-align: center; }
+}
+

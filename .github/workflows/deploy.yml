@@ -1,3 +1,4 @@
+
 name: Deploy teoisthewinner.com
 
 on:
@@ -20,10 +21,10 @@ jobs:
 
     steps:
       - name: Check out the site
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -75,7 +76,7 @@ jobs:
             set net:max-retries 2;
             set net:timeout 20;
             open -p 21 -u 'teo@teoisthewinner.com',\"$FTPS_PASSWORD\" 'ftp://secure367.inmotionhosting.com';
-            mirror --reverse --verbose=1 --parallel=4 --exclude-glob 'api/**' ./out/ /;
+            mirror --reverse --delete --verbose=1 --parallel=4 --exclude-glob 'api/**' --exclude-glob '.ftpquota' --exclude-glob '.sandbox-candidate*' ./out/ /;
             put .deploy-ready -o /.deploy-ready;
             bye
           "

@@ -1,3 +1,4 @@
+
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -26,3 +27,24 @@ test("renders the promoted crowd game as a public route", async () => {
   assert.doesNotMatch(html, /SANDBOX CROWD LOGIC TEST/);
   assert.doesNotMatch(html, /noindex/i);
 });
+
+test("renders the public idea box without exposing moderation controls", async () => {
+  const html = await readFile(new URL("sandbox/index.html", outputRoot), "utf8");
+
+  assert.match(html, /WHAT SHOULD TEO BUILD NEXT/);
+  assert.match(html, /SEND IDEA/);
+  assert.match(html, /Do not include your real name/);
+  assert.doesNotMatch(html, /APPROVE IDEA/);
+});
+
+test("exports Teo's private review-board login route", async () => {
+  const html = await readFile(
+    new URL("teo-admin/suggestions/index.html", outputRoot),
+    "utf8",
+  );
+
+  assert.match(html, /TEO(?:'|&#x27;)S CONTROL ROOM/);
+  assert.match(html, /IDEA REVIEW/);
+  assert.match(html, /REVIEW PASSWORD/);
+});
+

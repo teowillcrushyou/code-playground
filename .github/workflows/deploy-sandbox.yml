@@ -1,0 +1,90 @@
+
+name: Deploy sandbox candidate
+
+on:
+  push:
+    branches:
+      - sandbox-candidate
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: teoisthewinner-sandbox
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the candidate
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and test
+        run: npm test
+
+      - name: Package one standalone game
+        shell: bash
+        run: |
+          route="$(node -e "const c=require('./games/candidate.json'); if(!/^[a-z0-9-]+$/.test(c.route)) process.exit(2); process.stdout.write(c.route)")"
+          test -f "out/$route/index.html"
+          rm -rf candidate
+          mkdir -p candidate
+          cp -a out/_next candidate/_next
+          cp -a "out/$route/." candidate/
+          printf '{"title":%s,"route":%s,"commit":"%s"}\n' \
+            "$(node -p "JSON.stringify(require('./games/candidate.json').title)")" \
+            "$(node -p "JSON.stringify(require('./games/candidate.json').route)")" \
+            "$GITHUB_SHA" > candidate/candidate-meta.json
+
+      - name: Enforce a static-only candidate
+        shell: bash
+        run: |
+          if find candidate -type l -print -quit | grep -q .; then
+            echo "Symlinks are not allowed in a sandbox release." >&2
+            exit 1
+          fi
+          if find candidate -type f \( \
+            -iname '*.php' -o -iname '*.phtml' -o -iname '*.phar' -o \
+            -iname '*.cgi' -o -iname '*.pl' -o -iname '*.py' -o -iname '*.rb' -o \
+            -iname '.htaccess' -o -iname '.user.ini' \
+          \) -print -quit | grep -q .; then
+            echo "Executable or server-configuration files are not allowed." >&2
+            exit 1
+          fi
+
+      - name: Install the FTPS client
+        run: sudo apt-get update && sudo apt-get install --yes lftp
+
+      - name: Upload the candidate to guarded staging
+        env:
+          FTPS_PASSWORD: ${{ secrets.TEO_FTPS_PASSWORD }}
+        shell: bash
+        run: |
+          test -n "$FTPS_PASSWORD"
+          printf '%s' "$GITHUB_SHA" > .sandbox-ready
+          lftp -c "
+            set cmd:fail-exit yes;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate true;
+            set net:max-retries 2;
+            set net:timeout 20;
+            open -p 21 -u 'teo@teoisthewinner.com',\"$FTPS_PASSWORD\" 'ftp://secure367.inmotionhosting.com';
+            mirror --reverse --delete --verbose=1 --parallel=4 ./candidate/ /.sandbox-candidate/;
+            put .sandbox-ready -o /.sandbox-candidate/.sandbox-ready;
+            bye
+          "
+

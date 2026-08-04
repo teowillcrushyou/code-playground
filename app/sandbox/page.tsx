@@ -1,4 +1,6 @@
+
 import styles from "./Sandbox.module.css";
+import SuggestionBox from "./SuggestionBox";
 
 const projects = [
   {
@@ -40,7 +42,7 @@ export default function SandboxPage() {
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <a className={styles.back} href="/">← MAIN GAME MENU</a>
+        <a className={styles.back} href="/">â† MAIN GAME MENU</a>
         <p>TEO&apos;S BUILD ROOM</p>
         <h1>THE SANDBOX</h1>
         <span>
@@ -66,11 +68,13 @@ export default function SandboxPage() {
               href={project.url}
               aria-label={`Open ${project.name}`}
             >
-              OPEN <span aria-hidden="true">↗</span>
+              OPEN <span aria-hidden="true">â†—</span>
             </a>
           </article>
         ))}
       </section>
+
+      <SuggestionBox />
 
       <footer className={styles.footer}>
         <p><strong>Sandbox rule:</strong> try things, report weirdness, and have fun.</p>
@@ -79,3 +83,4 @@ export default function SandboxPage() {
     </main>
   );
 }
+
