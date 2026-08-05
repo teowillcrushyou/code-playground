@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "eggstorm-arena",
+    "title": "Eggstorm Arena",
+    "build": "0.01",
+    "status": "IN PROGRESS",
+    "description": "A fast 3D egg-tossing arena with mobile and desktop controls.",
+    "sourceUrl": "https://egg.teoisthewinner.com/"
+  },
+  {
+    "slug": "sandshift",
+    "title": "Sandshift",
+    "build": "0.01",
+    "status": "IN PROGRESS",
+    "description": "A digging puzzle beneath Bellingham Bay with falling stone, creatures, and tideglass.",
+    "sourceUrl": "https://sandshift.teoisthewinner.com/"
+  },
+  {
+    "slug": "northline",
+    "title": "Northline",
+    "build": "0.02",
+    "status": "IN PROGRESS",
+    "description": "A first-person motorcycle expedition from Seattle to Prudhoe Bay.",
+    "sourceUrl": "https://zeathe.teoisthewinner.com/"
+  }
+]

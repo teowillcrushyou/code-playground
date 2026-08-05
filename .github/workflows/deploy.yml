@@ -1,4 +1,3 @@
-
 name: Deploy teoisthewinner.com
 
 on:
@@ -76,8 +75,7 @@ jobs:
             set net:max-retries 2;
             set net:timeout 20;
             open -p 21 -u 'teo@teoisthewinner.com',\"$FTPS_PASSWORD\" 'ftp://secure367.inmotionhosting.com';
-            mirror --reverse --delete --verbose=1 --parallel=4 --exclude-glob 'api/**' --exclude-glob '.ftpquota' --exclude-glob '.sandbox-candidate*' ./out/ /;
+            mirror --reverse --delete --verbose=1 --parallel=4 --exclude-glob 'api/**' --exclude-glob 'sandbox/**' --exclude-glob '.ftpquota' --exclude-glob '.sandbox-candidate*' ./out/ /;
             put .deploy-ready -o /.deploy-ready;
             bye
           "
-

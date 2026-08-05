@@ -8,9 +8,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "package:sandbox": "node scripts/package-sandbox.mjs",
     "start": "next dev",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "test:sandbox": "node --test tests/sandbox-html.test.mjs",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next* --ignore-pattern out* --ignore-pattern candidate",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
