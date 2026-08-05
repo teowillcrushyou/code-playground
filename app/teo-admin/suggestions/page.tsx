@@ -11,7 +11,6 @@ type Suggestion = {
   createdAt: string;
   updatedAt: string;
   buildUrl?: string | null;
-  priorUrl?: string | null;
   officialUrl?: string | null;
   branch?: string | null;
 };
@@ -289,9 +288,6 @@ export default function SuggestionsAdminPage() {
             {suggestion.status === "ready" && suggestion.buildUrl ? (
               <div className={styles.buildLinks}>
                 <a href={suggestion.buildUrl} target="_blank" rel="noreferrer">PLAY NEW BUILD ↗</a>
-                {suggestion.priorUrl ? (
-                  <a href={suggestion.priorUrl} target="_blank" rel="noreferrer">PLAY PRIOR BUILD ↗</a>
-                ) : null}
               </div>
             ) : null}
 
@@ -339,4 +335,3 @@ export default function SuggestionsAdminPage() {
     </main>
   );
 }
-

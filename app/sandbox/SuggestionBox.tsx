@@ -1,4 +1,3 @@
-
 "use client";
 
 import { FormEvent, useState } from "react";
@@ -61,7 +60,7 @@ export default function SuggestionBox() {
 
       <form className={styles.suggestionForm} onSubmit={submitSuggestion}>
         <label htmlFor="suggestion-nickname">
-          PLAYER NAME <small>OPTIONAL â€” GET CREDIT FOR YOUR IDEA</small>
+          PLAYER NAME <small>OPTIONAL — GET CREDIT FOR YOUR IDEA</small>
         </label>
         <input
           id="suggestion-nickname"
@@ -104,7 +103,7 @@ export default function SuggestionBox() {
           </p>
           <button type="submit" disabled={submitState.kind === "sending"}>
             {submitState.kind === "sending" ? "SENDING..." : "SEND IDEA"}
-            <span aria-hidden="true">â†’</span>
+            <span aria-hidden="true">→</span>
           </button>
         </div>
 
@@ -120,4 +119,3 @@ export default function SuggestionBox() {
     </section>
   );
 }
-
