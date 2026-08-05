@@ -1,4 +1,3 @@
-
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
@@ -12,7 +11,6 @@ type Suggestion = {
   createdAt: string;
   updatedAt: string;
   buildUrl?: string | null;
-  priorUrl?: string | null;
   officialUrl?: string | null;
   branch?: string | null;
 };
@@ -31,6 +29,11 @@ const statusNames: Record<string, string> = {
 
 export default function SuggestionsAdminPage() {
   const [password, setPassword] = useState("");
+  const [mode, setMode] = useState<"login" | "request" | "reset">("login");
+  const [email, setEmail] = useState("");
+  const [resetToken, setResetToken] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [csrf, setCsrf] = useState("");
@@ -59,6 +62,14 @@ export default function SuggestionsAdminPage() {
   }, []);
 
   useEffect(() => {
+    const token = new URLSearchParams(window.location.search).get("reset") || "";
+    if (/^[a-f0-9]{64}$/.test(token)) {
+      setResetToken(token);
+      setMode("reset");
+    }
+  }, []);
+
+  useEffect(() => {
     loadSuggestions().catch((error) => {
       setAuthenticated(false);
       setMessage(error instanceof Error ? error.message : "Could not load ideas.");
@@ -80,6 +91,42 @@ export default function SuggestionsAdminPage() {
     }
     setPassword("");
     await loadSuggestions();
+  }
+
+  async function requestPasswordReset(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setMessage("");
+    const response = await fetch("/api/suggestions.php?action=request_password_reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const result = (await response.json()) as { ok?: boolean; message?: string };
+    setMessage(result.message || "The reset request could not be completed.");
+    if (response.ok && result.ok) setEmail("");
+  }
+
+  async function resetPassword(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setMessage("");
+    if (newPassword !== confirmPassword) {
+      setMessage("The two passwords do not match.");
+      return;
+    }
+    const response = await fetch("/api/suggestions.php?action=reset_password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: resetToken, password: newPassword }),
+    });
+    const result = (await response.json()) as { ok?: boolean; message?: string };
+    setMessage(result.message || "The password could not be changed.");
+    if (response.ok && result.ok) {
+      setNewPassword("");
+      setConfirmPassword("");
+      setResetToken("");
+      window.history.replaceState({}, "", "/teo-admin/suggestions/");
+      setMode("login");
+    }
   }
 
   async function act(id: string, action: "approve" | "reject" | "publish") {
@@ -113,6 +160,72 @@ export default function SuggestionsAdminPage() {
   }
 
   if (authenticated !== true) {
+    if (mode === "request") {
+      return (
+        <main className={styles.loginPage}>
+          <form className={styles.loginCard} onSubmit={requestPasswordReset}>
+            <p>TEO&apos;S CONTROL ROOM</p>
+            <h1>RESET ACCESS</h1>
+            <span>Enter the recovery email to receive a one-time reset link.</span>
+            <label htmlFor="recovery-email">RECOVERY EMAIL</label>
+            <input
+              id="recovery-email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+              required
+            />
+            <button type="submit">EMAIL RESET LINK →</button>
+            {message ? <strong role="status">{message}</strong> : null}
+            <button
+              className={styles.textButton}
+              type="button"
+              onClick={() => { setMessage(""); setMode("login"); }}
+            >
+              ← BACK TO SIGN IN
+            </button>
+          </form>
+        </main>
+      );
+    }
+
+    if (mode === "reset") {
+      return (
+        <main className={styles.loginPage}>
+          <form className={styles.loginCard} onSubmit={resetPassword}>
+            <p>TEO&apos;S CONTROL ROOM</p>
+            <h1>NEW PASSWORD</h1>
+            <span>Choose at least 10 characters with a letter and a number.</span>
+            <label htmlFor="new-review-password">NEW REVIEW PASSWORD</label>
+            <input
+              id="new-review-password"
+              type="password"
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+              minLength={10}
+              maxLength={128}
+              autoComplete="new-password"
+              required
+            />
+            <label htmlFor="confirm-review-password">CONFIRM PASSWORD</label>
+            <input
+              id="confirm-review-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              minLength={10}
+              maxLength={128}
+              autoComplete="new-password"
+              required
+            />
+            <button type="submit">SAVE NEW PASSWORD →</button>
+            {message ? <strong role="status">{message}</strong> : null}
+          </form>
+        </main>
+      );
+    }
+
     return (
       <main className={styles.loginPage}>
         <form className={styles.loginCard} onSubmit={login}>
@@ -128,9 +241,16 @@ export default function SuggestionsAdminPage() {
             autoComplete="current-password"
             required
           />
-          <button type="submit">OPEN THE BOARD â†’</button>
+          <button type="submit">OPEN THE BOARD →</button>
           {message ? <strong role="status">{message}</strong> : null}
-          <a href="/sandbox/">â† BACK TO THE SANDBOX</a>
+          <button
+            className={styles.textButton}
+            type="button"
+            onClick={() => { setMessage(""); setMode("request"); }}
+          >
+            FORGOT PASSWORD?
+          </button>
+          <a href="/sandbox/">← BACK TO THE SANDBOX</a>
         </form>
       </main>
     );
@@ -167,16 +287,13 @@ export default function SuggestionsAdminPage() {
 
             {suggestion.status === "ready" && suggestion.buildUrl ? (
               <div className={styles.buildLinks}>
-                <a href={suggestion.buildUrl} target="_blank" rel="noreferrer">PLAY NEW BUILD â†—</a>
-                {suggestion.priorUrl ? (
-                  <a href={suggestion.priorUrl} target="_blank" rel="noreferrer">PLAY PRIOR BUILD â†—</a>
-                ) : null}
+                <a href={suggestion.buildUrl} target="_blank" rel="noreferrer">PLAY NEW BUILD ↗</a>
               </div>
             ) : null}
 
             {suggestion.status === "published" && suggestion.officialUrl ? (
               <a className={styles.officialLink} href={suggestion.officialUrl} target="_blank" rel="noreferrer">
-                OPEN OFFICIAL GAME â†—
+                OPEN OFFICIAL GAME ↗
               </a>
             ) : null}
 
@@ -218,4 +335,3 @@ export default function SuggestionsAdminPage() {
     </main>
   );
 }
-

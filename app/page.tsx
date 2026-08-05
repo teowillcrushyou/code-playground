@@ -1,26 +1,5 @@
 import Leaderboard from "./Leaderboard";
 
-const upcomingGames = [
-  {
-    icon: "⛏",
-    title: "Block Quest",
-    type: "BUILD + EXPLORE",
-    tone: "lime",
-  },
-  {
-    icon: "🏄",
-    title: "Rail Rush",
-    type: "DODGE + DASH",
-    tone: "blue",
-  },
-  {
-    icon: "🏰",
-    title: "Sand Kingdom",
-    type: "DIG + DISCOVER",
-    tone: "gold",
-  },
-];
-
 export default function Home() {
   return (
     <main>
@@ -95,7 +74,7 @@ export default function Home() {
             <div className="mini-hills two" />
             <div className="mini-road"><i /><b /></div>
             <div className="mini-car"><i /><b /><span /></div>
-            <span className="featured-badge">FIRST RELEASE</span>
+            <span className="featured-badge">OFFICIAL · VERSION 1.00</span>
           </div>
           <div className="featured-copy">
             <p className="card-kicker">🏁 FEATURED GAME</p>
@@ -127,7 +106,7 @@ export default function Home() {
               {Array.from({ length: 10 }, (_, index) => <i key={`red-${index}`} />)}
             </div>
             <div className="wall-meter-mini"><span>HOME WALL</span><b /></div>
-            <span className="crowd-game-badge">NEW GAME</span>
+            <span className="crowd-game-badge">OFFICIAL · VERSION 1.00</span>
           </div>
           <div className="crowd-game-copy">
             <p className="card-kicker">SECOND ACTIVE GAME</p>
@@ -147,18 +126,6 @@ export default function Home() {
           </div>
         </article>
 
-        <div className="upcoming-grid" aria-label="Upcoming games">
-          {upcomingGames.map((game) => (
-            <article className={`upcoming-card ${game.tone}`} key={game.title}>
-              <div className="upcoming-icon" aria-hidden="true">{game.icon}</div>
-              <div>
-                <span>{game.type}</span>
-                <h3>{game.title}</h3>
-              </div>
-              <b>COMING SOON</b>
-            </article>
-          ))}
-        </div>
       </section>
 
       <Leaderboard />

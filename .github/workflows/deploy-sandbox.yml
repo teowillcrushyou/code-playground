@@ -1,5 +1,4 @@
-
-name: Deploy sandbox candidate
+name: Deploy permanent sandbox hub
 
 on:
   push:
@@ -20,7 +19,7 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - name: Check out the candidate
+      - name: Check out the workshop
         uses: actions/checkout@v5
 
       - name: Set up Node.js
@@ -32,24 +31,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build and test
+      - name: Test the main-site boundary
         run: npm test
 
-      - name: Package one standalone game
-        shell: bash
+      - name: Build and test the permanent sandbox hub
+        env:
+          TEO_SANDBOX_BUILD: "1"
         run: |
-          route="$(node -e "const c=require('./games/candidate.json'); if(!/^[a-z0-9-]+$/.test(c.route)) process.exit(2); process.stdout.write(c.route)")"
-          test -f "out/$route/index.html"
-          rm -rf candidate
-          mkdir -p candidate
-          cp -a out/_next candidate/_next
-          cp -a "out/$route/." candidate/
-          printf '{"title":%s,"route":%s,"commit":"%s"}\n' \
-            "$(node -p "JSON.stringify(require('./games/candidate.json').title)")" \
-            "$(node -p "JSON.stringify(require('./games/candidate.json').route)")" \
-            "$GITHUB_SHA" > candidate/candidate-meta.json
+          npm run build
+          npm run package:sandbox
+          npm run test:sandbox
 
-      - name: Enforce a static-only candidate
+      - name: Enforce a static-only sandbox release
         shell: bash
         run: |
           if find candidate -type l -print -quit | grep -q .; then
@@ -68,7 +61,7 @@ jobs:
       - name: Install the FTPS client
         run: sudo apt-get update && sudo apt-get install --yes lftp
 
-      - name: Upload the candidate to guarded staging
+      - name: Upload the hub to guarded staging
         env:
           FTPS_PASSWORD: ${{ secrets.TEO_FTPS_PASSWORD }}
         shell: bash
@@ -87,4 +80,3 @@ jobs:
             put .sandbox-ready -o /.sandbox-candidate/.sandbox-ready;
             bye
           "
-
