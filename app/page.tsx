@@ -85,188 +85,76 @@ export default function Home() {
             </p>
             <div className="game-tags"><span>DRIVING</span><span>ARCADE</span><span>ALL AGES</span></div>
             <a
-              className="launch-button"ÔÆ{∂âûÀk∫wµÁon=logout", {
-      method: "POST",
-      headers: { "X-CSRF-Token": csrf },
-    });
-    setSuggestions([]);
-    setAuthenticated(false);
-    setCsrf("");
-  }
-
-  if (authenticated !== true) {
-    if (mode === "request") {
-      return (
-        <main className={styles.loginPage}>
-          <form className={styles.loginCard} onSubmit={requestPasswordReset}>
-            <p>TEO&apos;S CONTROL ROOM</p>
-            <h1>RESET ACCESS</h1>
-            <span>Enter the recovery email to receive a one-time reset link.</span>
-            <label htmlFor="recovery-email">RECOVERY EMAIL</label>
-            <input
-              id="recovery-email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="email"
-              required
-            />
-            <button type="submit">EMAIL RESET LINK ‚Üí</button>
-            {message ? <strong role="status">{message}</strong> : null}
-            <button
-              className={styles.textButton}
-              type="button"
-              onClick={() => { setMessage(""); setMode("login"); }}
+              className="launch-button"
+              href="https://teo.slashnburngrowth.biz/"
+              aria-label="Play Drive Down the Alcan"
             >
-              ‚Üê BACK TO SIGN IN
-            </button>
-          </form>
-        </main>
-      );
-    }
+              PLAY NOW <span>‚Üí</span>
+            </a>
+          </div>
+        </article>
 
-    if (mode === "reset") {
-      return (
-        <main className={styles.loginPage}>
-          <form className={styles.loginCard} onSubmit={resetPassword}>
-            <p>TEO&apos;S CONTROL ROOM</p>
-            <h1>NEW PASSWORD</h1>
-            <span>Choose at least 10 characters with a letter and a number.</span>
-            <label htmlFor="new-review-password">NEW REVIEW PASSWORD</label>
-            <input
-              id="new-review-password"
-              type="password"
-              value={newPassword}
-              onChange={(event) => setNewPassword(event.target.value)}
-              minLength={10}
-              maxLength={128}
-              autoComplete="new-password"
-              required
-            />
-            <label htmlFor="confirm-review-password">CONFIRM PASSWORD</label>
-            <input
-              id="confirm-review-password"
-              type="password"
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              minLength={10}
-              maxLength={128}
-              autoComplete="new-password"
-              required
-            />
-            <button type="submit">SAVE NEW PASSWORD ‚Üí</button>
-            {message ? <strong role="status">{message}</strong> : null}
-          </form>
-        </main>
-      );
-    }
-
-    return (
-      <main className={styles.loginPage}>
-        <form className={styles.loginCard} onSubmit={login}>
-          <p>TEO&apos;S CONTROL ROOM</p>
-          <h1>IDEA REVIEW</h1>
-          <span>Use the private review password to open the suggestion board.</span>
-          <label htmlFor="review-password">REVIEW PASSWORD</label>
-          <input
-            id="review-password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete="current-password"
-            required
-          />
-          <button type="submit">OPEN THE BOARD ‚Üí</button>
-          {message ? <strong role="status">{message}</strong> : null}
-          <button
-            className={styles.textButton}
-            type="button"
-            onClick={() => { setMessage(""); setMode("request"); }}
-          >
-            FORGOT PASSWORD?
-          </button>
-          <a href="/sandbox/">‚Üê BACK TO THE SANDBOX</a>
-        </form>
-      </main>
-    );
-  }
-
-  return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <div>
-          <p>TEO&apos;S CONTROL ROOM</p>
-          <h1>IDEA REVIEW</h1>
-          <span>Approve the fun ideas. Pass on anything that does not fit.</span>
-        </div>
-        <button type="button" onClick={logout}>LOCK BOARD</button>
-      </header>
-
-      {message ? <p className={styles.notice} role="status">{message}</p> : null}
-
-      <section className={styles.board} aria-label="Game suggestions">
-        {suggestions.length === 0 ? (
-          <div className={styles.empty}>NO IDEAS WAITING YET. GO PLAY SOMETHING.</div>
-        ) : suggestions.map((suggestion) => (
-          <article className={styles.card} key={suggestion.id}>
-            <div className={styles.cardTop}>
-              <strong className={styles[suggestion.status] || styles.pending}>
-                {statusNames[suggestion.status] || suggestion.status.toUpperCase()}
-              </strong>
-              <time dateTime={suggestion.createdAt}>
-                {new Date(suggestion.createdAt).toLocaleString()}
-              </time>
+        <article className="crowd-game-card">
+          <div className="crowd-game-art" aria-hidden="true">
+            <div className="crowd-road" />
+            <div className="choice-gate choice-gate-left"><span>+12</span></div>
+            <div className="choice-gate choice-gate-right"><span>√ó3</span></div>
+            <div className="crowd-squad crowd-squad-blue">
+              {Array.from({ length: 14 }, (_, index) => <i key={`blue-${index}`} />)}
             </div>
-            <h2>{suggestion.nickname || "ANONYMOUS PLAYER"}</h2>
-            <p>{suggestion.idea}</p>
-
-            {suggestion.status === "ready" && suggestion.buildUrl ? (
-              <div className={styles.buildLinks}>
-                <a href={suggestion.buildUrl} target="_blank" rel="noreferrer">PLAY NEW BUILD ‚Üó</a>
-              </div>
-            ) : null}
-
-            {suggestion.status === "published" && suggestion.officialUrl ? (
-              <a className={styles.officialLink} href={suggestion.officialUrl} target="_blank" rel="noreferrer">
-                OPEN OFFICIAL GAME ‚Üó
-              </a>
-            ) : null}
-
-            <div className={styles.actions}>
-              {suggestion.status === "pending" ? (
-                <>
-                  <button
-                    className={styles.approve}
-                    type="button"
-                    disabled={busyId === suggestion.id}
-                    onClick={() => act(suggestion.id, "approve")}
-                  >
-                    APPROVE IDEA
-                  </button>
-                  <button
-                    className={styles.reject}
-                    type="button"
-                    disabled={busyId === suggestion.id}
-                    onClick={() => act(suggestion.id, "reject")}
-                  >
-                    PASS FOR NOW
-                  </button>
-                </>
-              ) : null}
-              {suggestion.status === "ready" ? (
-                <button
-                  className={styles.publish}
-                  type="button"
-                  disabled={busyId === suggestion.id}
-                  onClick={() => act(suggestion.id, "publish")}
-                >
-                  MAKE IT AN OFFICIAL GAME
-                </button>
-              ) : null}
+            <div className="crowd-squad crowd-squad-red">
+              {Array.from({ length: 10 }, (_, index) => <i key={`red-${index}`} />)}
             </div>
-          </article>
-        ))}
+            <div className="wall-meter-mini"><span>HOME WALL</span><b /></div>
+            <span className="crowd-game-badge">OFFICIAL ¬∑ VERSION 1.00</span>
+          </div>
+          <div className="crowd-game-copy">
+            <p className="card-kicker">SECOND ACTIVE GAME</p>
+            <h3>ALCAN CROWD<br /><em>CLASH</em></h3>
+            <p>
+              Compare the gates, grow your blue crew, stop the red crowd, and
+              protect the home wall.
+            </p>
+            <div className="game-tags"><span>STRATEGY</span><span>ARCADE</span><span>ALL AGES</span></div>
+            <a
+              className="launch-button"
+              href="/alcan-block-brigade/"
+              aria-label="Play Alcan Crowd Clash"
+            >
+              PLAY NOW <span>‚Üí</span>
+            </a>
+          </div>
+        </article>
+
       </section>
+
+      <Leaderboard />
+
+      <section className="about-strip" id="about">
+        <p>BUILT FOR BIG IMAGINATIONS</p>
+        <h2>THIS IS JUST THE START.</h2>
+        <span>New worlds. New challenges. More ways to win.</span>
+      </section>
+
+      <section className="sandbox-entry" aria-labelledby="sandbox-entry-title">
+        <div>
+          <p>WORKBENCH ACCESS</p>
+          <h2 id="sandbox-entry-title">THE SANDBOX</h2>
+          <span>Playable experiments and games still being built.</span>
+        </div>
+        <a className="sandbox-button" href="/sandbox/">
+          OPEN SANDBOX <span aria-hidden="true">‚Üí</span>
+        </a>
+        <small>EXPERIMENTAL BUILDS ¬∑ EXPECT CHANGES</small>
+      </section>
+
+      <footer>
+        <div className="brand footer-brand">
+          <span className="brand-cube" aria-hidden="true">T</span>
+          <span><strong>TEO IS THE</strong><b>WINNER!</b></span>
+        </div>
+        <p>¬© 2026 TeoIsTheWinner.com ¬∑ PLAY KIND. HAVE FUN.</p>
+      </footer>
     </main>
   );
 }
