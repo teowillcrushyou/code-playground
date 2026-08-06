@@ -199,6 +199,39 @@
 .footer p { margin: 0; }
 .footer a { font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
 
+.unicornFooter {
+  width: min(980px, 100%);
+  margin: 38px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 4vw, 34px);
+  color: #7d3ec3;
+  text-align: center;
+}
+
+.unicornFooter > span {
+  font-size: clamp(18px, 4vw, 32px);
+}
+
+.unicornFooter a {
+  min-width: min(100%, 290px);
+  padding: 14px 22px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  border: 2px solid #172033;
+  background: linear-gradient(120deg, #ffd0df, #fff4a8 42%, #bff4ff 72%, #dfd0ff);
+  color: #172033;
+  box-shadow: 5px 5px 0 #172033;
+}
+
+.unicornFooter b { font-size: 38px; line-height: 1; }
+.unicornFooter strong { font-size: 9px; letter-spacing: 1.3px; }
+.unicornFooter small { font-size: 8px; font-weight: 700; }
+.unicornFooter a:hover,
+.unicornFooter a:focus-visible { transform: translate(2px, 2px); box-shadow: 3px 3px 0 #172033; }
+
 .suggestions {
   width: min(980px, 100%);
   margin: 4px auto 38px;
@@ -345,4 +378,5 @@
   .suggestionActions { grid-template-columns: 1fr; }
   .suggestionActions button { width: 100%; }
   .footer { align-items: flex-start; flex-direction: column; }
+  .unicornFooter { margin-top: 32px; }
 }

@@ -22,5 +22,13 @@
     "status": "IN PROGRESS",
     "description": "A first-person motorcycle expedition from Seattle to Prudhoe Bay.",
     "sourceUrl": "https://zeathe.teoisthewinner.com/"
+  },
+  {
+    "slug": "unicorn-star-trail",
+    "title": "Unicorn Star Trail",
+    "build": "0.01",
+    "status": "IN PROGRESS",
+    "description": "Guide a rainbow unicorn across the sky, collect ten stars, and dodge the drizzle clouds.",
+    "sourceUrl": "/sandbox/games/unicorn-star-trail/"
   }
 ]

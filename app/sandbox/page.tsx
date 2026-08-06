@@ -63,6 +63,16 @@ export default function SandboxPage() {
         <p><strong>Sandbox rule:</strong> try things, report weirdness, and have fun.</p>
         <Link href="/">BACK TO OFFICIAL GAMES</Link>
       </footer>
+
+      <div className={styles.unicornFooter} aria-label="A cheerful test unicorn at the bottom of the sandbox">
+        <span aria-hidden="true">{"\u2728"}</span>
+        <Link href="/sandbox/games/unicorn-star-trail/" aria-label="Play Unicorn Star Trail current build 0.01">
+          <b aria-hidden="true">{"\u{1F984}"}</b>
+          <strong>TEST UNICORN FOUND</strong>
+          <small>PLAY BUILD 0.01 {"\u2192"}</small>
+        </Link>
+        <span aria-hidden="true">{"\u2728"}</span>
+      </div>
     </main>
   );
 }

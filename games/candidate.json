@@ -1,6 +1,6 @@
 {
-  "title": null,
-  "route": null,
-  "slug": null,
-  "build": null
+  "title": "Unicorn Star Trail",
+  "route": "/sandbox/games/unicorn-star-trail/",
+  "slug": "unicorn-star-trail",
+  "build": "0.01"
 }
